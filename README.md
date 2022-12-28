@@ -91,4 +91,14 @@ public class Main {
 }
 ```
 
+Sample output: 
+
+```
+Encrypted: 
+±XkÅÍÕØwµþMeú®\uÍçyùãÑ¿¨R~Õìsù÷ Çµ¨ÙDhÜÐÕÿy­û@
+
+Decrypted: 
+Hello World, I heard that you enjoy wacki mac on your pasta!
+```
+
 Thanks for checking out my project!
