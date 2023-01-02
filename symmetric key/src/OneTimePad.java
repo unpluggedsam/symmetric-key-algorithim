@@ -56,6 +56,10 @@ public class OneTimePad {
         return result;
     }
 
+    /**
+     * Decrypts Cipher Block Chaining. First, it decrypts the block using operation D, and then
+     * decrypts that decrypted block using the cipher text previous to that block. 
+     */
     private int[] decryptBlockBits(List<int[]> blockBits, int[] key, int size) {
 
         List<Integer> result = new ArrayList<>(size);
@@ -70,7 +74,10 @@ public class OneTimePad {
     }
 
 
-    // applys XOR operation to each block
+    /**
+     * Cipher Block Chaining. Essentially, if the operation to encrypt is E, then each block is encrypted with both E and the previous block.
+     *
+     */
     private int[] encryptBlockBits(List<int[]> blockBits, int[] key, int size) {
 
         List<int[]> encryptedBlockBits = new ArrayList<>(size);
