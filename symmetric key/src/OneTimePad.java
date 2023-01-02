@@ -1,8 +1,11 @@
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OneTimePad {
 
@@ -23,12 +26,12 @@ public class OneTimePad {
     public int[] encryptString(String value, int[] key) {
         int[] binary = convertStringToBinary(value);
         List<int[]> blockBits = blockBinaryBits(binary);
-        return XORBlockBits(blockBits, key, binary.length);
+        return encryptBlockBits(blockBits, key, binary.length);
     }
 
     public String decryptBinary(int[] binary, int[] key) {
         List<int[]> blockBits = blockBinaryBits(binary);
-        int[] decryptedBits = XORBlockBits(blockBits, key, binary.length);
+        int[] decryptedBits = decryptBlockBits(blockBits, key, binary.length);
         return convertBinaryToString(decryptedBits);
     }
 
@@ -53,16 +56,35 @@ public class OneTimePad {
         return result;
     }
 
-    // applys XOR operation to each block
-    private int[] XORBlockBits(List<int[]> blockBits, int[] key, int size) {
-        int[] result = new int[size];
+    private int[] decryptBlockBits(List<int[]> blockBits, int[] key, int size) {
 
-        AtomicInteger i = new AtomicInteger();
-        blockBits.forEach(block -> {
-            System.arraycopy(XORBinary(block, key), 0, result, i.get(), XORBinary(block, key).length);
-            i.addAndGet(XORBinary(block, key).length);
-        });
-        return result;
+        List<Integer> result = new ArrayList<>(size);
+
+        result.addAll(Arrays.stream(XORBinary(blockBits.get(0), key)).boxed().toList());
+
+        for (int i = 1; i < blockBits.size(); i++) {
+            result.addAll(Arrays.stream(XORBinary(XORBinary(blockBits.get(i), key), blockBits.get(i - 1))).boxed().toList());
+        }
+
+        return result.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+
+    // applys XOR operation to each block
+    private int[] encryptBlockBits(List<int[]> blockBits, int[] key, int size) {
+
+        List<int[]> encryptedBlockBits = new ArrayList<>(size);
+        List<Integer> result = new ArrayList<>(size);
+
+        encryptedBlockBits.add(XORBinary(blockBits.get(0), key));
+        result.addAll(Arrays.stream(XORBinary(blockBits.get(0), key)).boxed().toList());
+
+        for (int i = 1; i < blockBits.size(); i++) {
+            encryptedBlockBits.add(XORBinary(XORBinary(encryptedBlockBits.get(i - 1), blockBits.get(i)), key));
+            result.addAll(Arrays.stream(XORBinary(XORBinary(encryptedBlockBits.get(i - 1), blockBits.get(i)), key)).boxed().toList());
+        }
+
+        return result.stream().mapToInt(Integer::intValue).toArray();
     }
 
     /**
@@ -86,6 +108,7 @@ public class OneTimePad {
             result[z] = binary[z] ^ key[i];
             i++;
         }
+
         return result;
     }
 
