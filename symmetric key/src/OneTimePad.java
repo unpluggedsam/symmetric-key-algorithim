@@ -129,18 +129,14 @@ public class OneTimePad {
     }
 
 
-   // very simply generates a key.
-   // if the random number is > 0.5 then it's 0 or else it's 1
     public int[] generateKey(KEY_SIZE keySize) {
+
+        SecureRandom random = new SecureRandom();
 
         int[] key = new int[keySize.getSize()];
 
         for (int i = 0; i < keySize.getSize(); i++) {
-            if (Math.random() < 0.5) {
-                key[i] = 0;
-            } else {
-                key[i] = 1;
-            }
+            key[i] = random.nextInt(2);
         }
         return key;
     }
