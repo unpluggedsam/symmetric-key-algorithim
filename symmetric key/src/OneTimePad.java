@@ -58,7 +58,7 @@ public class OneTimePad {
 
     /**
      * Decrypts Cipher Block Chaining. First, it decrypts the block using operation D, and then
-     * decrypts that decrypted block using the cipher text previous to that block. 
+     * decrypts that decrypted block using the cipher text previous to that block.
      */
     private int[] decryptBlockBits(List<int[]> blockBits, int[] key, int size) {
 
@@ -87,8 +87,8 @@ public class OneTimePad {
         result.addAll(Arrays.stream(XORBinary(blockBits.get(0), key)).boxed().toList());
 
         for (int i = 1; i < blockBits.size(); i++) {
-            encryptedBlockBits.add(XORBinary(XORBinary(encryptedBlockBits.get(i - 1), blockBits.get(i)), key));
-            result.addAll(Arrays.stream(XORBinary(XORBinary(encryptedBlockBits.get(i - 1), blockBits.get(i)), key)).boxed().toList());
+            encryptedBlockBits.add(XORBinary(XORBinary(blockBits.get(i), encryptedBlockBits.get(i - 1)), key));
+            result.addAll(Arrays.stream(XORBinary(XORBinary(blockBits.get(i), encryptedBlockBits.get(i - 1)), key)).boxed().toList());
         }
 
         return result.stream().mapToInt(Integer::intValue).toArray();
@@ -106,14 +106,12 @@ public class OneTimePad {
      **/
     private int[] XORBinary(int[] binary, int[] key) {
 
-        int[] result = new int[binary.length];
+        int size = binary.length;
 
-        int i = 0;
+        int[] result = new int[size];
 
         for (int z = 0; z < binary.length; z++) {
-            if (i >= key.length) i = 0;
-            result[z] = binary[z] ^ key[i];
-            i++;
+            result[z] = binary[z] ^ key[z];
         }
 
         return result;
