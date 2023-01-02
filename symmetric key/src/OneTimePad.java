@@ -106,9 +106,7 @@ public class OneTimePad {
      **/
     private int[] XORBinary(int[] binary, int[] key) {
 
-        int size = binary.length;
-
-        int[] result = new int[size];
+        int[] result = new int[binary.length];
 
         for (int z = 0; z < binary.length; z++) {
             result[z] = binary[z] ^ key[z];
