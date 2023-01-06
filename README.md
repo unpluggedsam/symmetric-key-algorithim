@@ -15,15 +15,16 @@ Encrypting the String has multiple steps. The first of which is to make the call
 int[] encrypted = pad.encryptString("Hello world, I heard that you enjoy wacki mac on your pasta!" , key);
 ```
 The call will return a new array of encrypted bits. It does this in a few steps.
-#### Converting the String to Binary
+#### Convert the String to Binary
 The first step of encryption is to convert the given String into binary. The program takes advantage of the `Integer`'s class
 `toBinaryString()` method and simply converts each character into it's corresponding binary value. 
-#### Blocking the Binary Array
+#### Block the Binary Array
 The next step is to convert the long binary array into 128 bit chunks. This is so the array is not too long 
 and unwieldly. This allows the generated key to be reapplied to each block. 
-#### XOR Each Block
-Each block then has the encryption method applied to it, `XORBinary()`. Once every block has been encrypted
-each block is concatenated together and returned in one large integer array.
+#### XOR The First Block
+The first block would have the XOR operation applied to it. Then, it's encrypted value would be stored.
+#### Use the Previous Blocks Encrypted Value and Repeat Until Fully Encrypted
+The next block would then use the previously encrypted blocks value as a key. Then, that encrypted value would also be XOR'ed using the original key. This process would be repeated until all the blocks were encrypted.
 #### XOR operation
 The XOR operation is relatively simple. It iterates through every value in the Strings binary value, and the key and compares them. 
 It then uses Java's built in XOR operator, `^`, and the correct value is returned. The XOR operator provides the following computation:
@@ -43,9 +44,18 @@ Decrypting the binary is essentially the same process as encrypting the binary. 
 ```Java
 String decrypted = pad.decryptBinary(encrypted, key);
 ```
-The first step blocks the binary, and then the XOR algorithim is applied to each block. The only difference is that the binary returned must then be 
-converted into a String. 
+#### Block the Binary Array
+Same as encrypting, the binary array must first be blocked.
 
+#### XOR the First Block
+Also same as encrypting, the first block must be decrypted with the key.
+
+#### Use the Previous Blocks Encrypted Value and Repeat Until Fully Encrypted
+This process is similair to the encrypting method, but has a minor difference. First, the encrypted value
+is XOR'ed using the key, and then it is XOR'ed using the previous block.
+
+#### Convert the binary back to a String
+The final step is to convert the binary back to a String. This process takes advantage of the `Integer`'s class `parseInt()` method.
 
 ## Sample Code
 
