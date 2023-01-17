@@ -76,7 +76,6 @@ public class OneTimePad {
 
     /**
      * Cipher Block Chaining. Essentially, if the operation to encrypt is E, then each block is encrypted with both E and the previous block.
-     *
      */
     private int[] encryptBlockBits(List<int[]> blockBits, int[] key, int size) {
 
@@ -124,14 +123,9 @@ public class OneTimePad {
     private List<int[]> blockBinaryBits(int[] binary) {
         List<int[]> blockBits = new ArrayList<>();
         for (int i = 0; i < binary.length; i += 128) {
-            int[] block;
-            if (binary.length - i < 128) {
-                block = new int[binary.length - i];
-                System.arraycopy(binary, i, block, 0, binary.length - i);
-            } else {
-                block = new int[128];
-                System.arraycopy(binary, i, block, 0, 128);
-            }
+            int size = Math.min(binary.length - i, 128);
+            int[] block = new int[size];
+            System.arraycopy(binary, i, block, 0, size);
             blockBits.add(block);
         }
         return blockBits;
